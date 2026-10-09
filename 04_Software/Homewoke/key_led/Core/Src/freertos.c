@@ -75,9 +75,9 @@ const osThreadAttr_t blink_task_attributes = {
 
 int fputc(int ch, FILE *f)
 {
-	uint8_t c = ch;
-	HAL_UART_Transmit(&huart1, &c, 1, HAL_MAX_DELAY);
-	return ch;
+  uint8_t c = ch;
+  HAL_UART_Transmit(&huart1, &c, 1, HAL_MAX_DELAY);
+  return ch;
 }
 
 /* USER CODE END FunctionPrototypes */
@@ -110,9 +110,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-	
-	key_queue = xQueueCreate(16, sizeof(key_press_status_t));
-	
+
+  key_queue = xQueueCreate(16, sizeof(key_press_status_t));
+
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
@@ -143,19 +143,17 @@ void MX_FREERTOS_Init(void) {
 void key_task_func(void *argument)
 {
   /* USER CODE BEGIN key_task_func */
-	
-	key_press_status_t state = KEY_NOT_PRESS, last_state = KEY_NOT_PRESS;
-	
+
+  key_press_status_t state = KEY_NOT_PRESS;
+
   /* Infinite loop */
   for(;;)
   {
-		if (KEY_OK != key_scan(&state))
-			printf("key error!\r\n");
-		
-		if (state != last_state) {
-			xQueueSend(key_queue, &state, 0);
-			last_state = state;
-		}
+    if (KEY_OK != key_scan(&state))
+        printf("key error!\r\n");
+    
+    if (KEY_NOT_PRESS != state)
+        xQueueSend(key_queue, &state, 0);
     osDelay(1);
   }
   /* USER CODE END key_task_func */
@@ -171,20 +169,17 @@ void key_task_func(void *argument)
 void blink_task_func(void *argument)
 {
   /* USER CODE BEGIN blink_task_func */
-	
-	key_press_status_t key_state = KEY_NOT_PRESS;
-	
+
+  key_press_status_t key_state = KEY_NOT_PRESS;
+
   /* Infinite loop */
   for(;;)
   {
-		xQueueReceive(key_queue, &key_state, portMAX_DELAY);
-		if (KEY_PRESS == key_state) {
-			led_on();
-		}
-		else {
-			led_off();
-		}
-    osDelay(1);
+    xQueueReceive(key_queue, &key_state, portMAX_DELAY);
+    if (KEY_PRESS == key_state)
+        led_on();
+    if (KEY_LONG_PRESS == key_state)
+        led_off();
   }
   /* USER CODE END blink_task_func */
 }

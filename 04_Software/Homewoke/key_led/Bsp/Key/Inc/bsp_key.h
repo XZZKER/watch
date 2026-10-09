@@ -27,13 +27,14 @@
 //******************************** Defines **********************************//
 
 typedef enum {
-    KEY_OK        = 0,
-    KEY_ERROR     = 1
+    KEY_OK          = 0,
+    KEY_ERROR       = 1
 } key_status_t;
 
 typedef enum {
-    KEY_PRESS     = 0,
-    KEY_NOT_PRESS = 1
+    KEY_NOT_PRESS   = 0,
+    KEY_PRESS       = 1,
+    KEY_LONG_PRESS  = 2
 } key_press_status_t;
 
 //******************************** Defines **********************************//

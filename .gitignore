@@ -1,0 +1,21 @@
+# Keil MDK 编译产物
+*.o
+*.crf
+*.d
+*.axf
+*.hex
+*.map
+*.htm
+*.dep
+*.lnp
+*.lst
+*.iex
+*.sct
+*.build_log.htm
+*.bak
+*.scvd
+*.uvguix.*
+JLinkLog.txt
+
+# MDK 输出目录（整个目录都是编译产物）
+04_Software/Homewoke/key_led/MDK-ARM/key_led/

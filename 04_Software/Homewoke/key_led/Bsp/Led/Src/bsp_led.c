@@ -36,17 +36,17 @@
 led_status_t led_on(void)
 {
     HAL_GPIO_WritePin(GPIO_LED_GPIO_Port, GPIO_LED_Pin, GPIO_PIN_RESET);
-		return LED_OK;
+    return LED_OK;
 }
 
 led_status_t led_off(void)
 {
     HAL_GPIO_WritePin(GPIO_LED_GPIO_Port, GPIO_LED_Pin, GPIO_PIN_SET);
-		return LED_OK;
+    return LED_OK;
 }
 
 led_status_t led_toggle(void)
 {
     HAL_GPIO_TogglePin(GPIO_LED_GPIO_Port, GPIO_LED_Pin);
-		return LED_OK;
+    return LED_OK;
 }

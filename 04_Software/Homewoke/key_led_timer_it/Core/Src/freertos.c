@@ -104,8 +104,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
 
-  it_to_key = xQueueCreate(16, sizeof(it_msg_t));
-  key_to_led = xQueueCreate(16, sizeof(key_press_status_t));
+  it_to_key = xQueueCreate(16, sizeof(it_msg_t*));
+  key_to_led = xQueueCreate(16, sizeof(key_press_status_t*));
 
   /* USER CODE END RTOS_QUEUES */
 
@@ -137,28 +137,26 @@ void key_task_func(void *argument)
 {
   /* USER CODE BEGIN key_task_func */
 
-  it_msg_t msg = {
-    .type = IT_FALLING,
-    .tick = 0
-  };
+  it_msg_t *p_msg = NULL;
   uint32_t last_tick = 0;
   key_press_status_t status = KEY_NOT_PRESS;
 
   /* Infinite loop */
   for(;;)
   {
-    xQueueReceive(it_to_key, &msg, portMAX_DELAY);
-    if (msg.type == IT_FALLING) {
-      last_tick = msg.tick;
+    xQueueReceive(it_to_key, &p_msg, portMAX_DELAY);
+    if (p_msg->type == IT_FALLING) {
+      last_tick = p_msg->tick;
     }
     else {
-      if (msg.tick - last_tick > 500)
+      if (p_msg->tick - last_tick > 500)
         status = KEY_LONG_PRESS;
-      else if (msg.tick - last_tick > 20)
+      else if (p_msg->tick - last_tick > 20)
         status = KEY_PRESS;
       else
         continue;
-      xQueueSendToBack(key_to_led, &status, portMAX_DELAY);
+      key_press_status_t *p_status = &status;
+      xQueueSendToBack(key_to_led, &p_status, portMAX_DELAY);
     }
 
     osDelay(1);
@@ -177,12 +175,13 @@ void led_task_func(void *argument)
 {
   /* USER CODE BEGIN led_task_func */
 
-  key_press_status_t status = KEY_NOT_PRESS;
+  key_press_status_t *p_status = NULL;
 
   /* Infinite loop */
   for(;;)
   {
-    xQueueReceive(key_to_led, &status, portMAX_DELAY);
+    xQueueReceive(key_to_led, &p_status, portMAX_DELAY);
+    key_press_status_t status = *p_status;
     if (status == KEY_PRESS)
       toggle_cnt++;
     else if (status == KEY_LONG_PRESS)

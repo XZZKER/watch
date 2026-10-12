@@ -172,22 +172,24 @@ void EXTI0_IRQHandler(void)
 
   static uint8_t flag = 0;
   static EXTI_HandleTypeDef hexit  = {0};
-
   static EXTI_ConfigTypeDef config = {
     .Line    = EXTI_LINE_0,
     .Mode    = EXTI_MODE_INTERRUPT,
     .GPIOSel = EXTI_GPIOA
   };
-
-  it_msg_t msg = {
-    .tick = HAL_GetTick(),
-    .type = flag == 0 ? IT_FALLING : IT_RISING
+  static it_msg_t msg = {
+    .tick = 0,
+    .type = IT_FALLING
   };
   
   config.Trigger = flag == 0 ? EXTI_TRIGGER_RISING : EXTI_TRIGGER_FALLING;
-
   HAL_EXTI_SetConfigLine(&hexit, &config);
-  xQueueSendToBackFromISR(it_to_key, &msg, NULL);
+
+  msg.tick = HAL_GetTick();
+  msg.type = flag == 0 ? IT_FALLING : IT_RISING;
+  it_msg_t *p_msg = &msg;
+  xQueueSendToBackFromISR(it_to_key, &p_msg, NULL);
+
   flag ^= 1;
 
   /* USER CODE END EXTI0_IRQn 0 */

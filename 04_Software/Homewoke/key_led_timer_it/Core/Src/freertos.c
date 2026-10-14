@@ -137,6 +137,9 @@ void key_task_func(void *argument)
 {
   /* USER CODE BEGIN key_task_func */
 
+  // test
+  // HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);
+
   it_msg_t *p_msg = NULL;
   uint32_t last_tick = 0;
   key_press_status_t status = KEY_NOT_PRESS;

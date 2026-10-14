@@ -170,6 +170,9 @@ void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
 
+  // test
+  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);
+
   static uint8_t flag = 0;
   static EXTI_HandleTypeDef hexit  = {0};
   static EXTI_ConfigTypeDef config = {
@@ -191,6 +194,9 @@ void EXTI0_IRQHandler(void)
   xQueueSendToBackFromISR(it_to_key, &p_msg, NULL);
 
   flag ^= 1;
+
+  // test
+  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);
 
   /* USER CODE END EXTI0_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
